@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+	<head> 
+		<meta content="text/html; charset=utf-8" http-equiv="Content-Type" /> 
+		<title>BigBlueButton Web Gateway</title> 
+	</head> 
+	<body> 
+		<div id="page-wrap"> 
+			<div id="header" class="ui-widget" onclick="window.location='/';"> 
+				<div id="header-text"> 
+					<h1 class="ui-widget-header ui-corner-top">BigBlueButton Gateway</h1> 
+					<h2 class="ui-widget-content ui-corner-bottom"> 
+						API Gateway for BigBlueButton Testing
+						<a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" href="http://genericconf.com">Contact Us</a> 
+					</h2> 
+				</div> 
+			</div> 
+			<div id="rightbar"> 
+				<div class="ui-widget"> 
+					<h3 class="ui-widget-header ui-corner-top"><a href="#">Navigation</a></h3> 
+					<div class="ui-widget-content ui-corner-bottom"> 
+						<ul> 
+							<li><a href="#" wicket:id="homelink">Home page</a></li> 
+						</ul> 
+					</div> 
+				</div> 
+				<div class="ui-widget last-widget"> 
+					<h3 class="ui-widget-header ui-corner-top"><a href="#">Other Widget</a></h3> 
+					<div class="ui-widget-content ui-corner-bottom">
+						WIDGET CONTENT GOES HERE 
+					</div> 
+				</div> 
+			</div> 
+			<div id="main-content" class="ui-widget">
+				<h3 wicket:id="content-header" class="ui-widget-header ui-corner-top"></h3>
+				<div class="ui-widget-content ui-corner-bottom" id="main-content-body">
+					<wicket:child />
+				</div>
+			</div> <!--  end of #main-content  --> 
+			<div class="ui-helper-clearfix"></div> 
+			<div id="footer" class="ui-widget ui-widget-content ui-corner-all"> 
+				This site is &copy; 2010 by Generic Conferencing, LLC
+			</div> 
+		</div> <!--  end of #page-wrap  -->		
+	</body> 
+</html> 
