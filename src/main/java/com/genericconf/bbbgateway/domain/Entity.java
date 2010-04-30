@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-package com.genericconf.bbbgateway.web.pages;
+package com.genericconf.bbbgateway.domain;
 
-import org.apache.wicket.PageParameters;
+import java.io.Serializable;
 
-/**
- * Homepage
- */
-public class HomePage extends BasePage {
+public class Entity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-    public HomePage(final PageParameters parameters) {
-
-    }
 }

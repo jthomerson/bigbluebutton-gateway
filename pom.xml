@@ -175,7 +175,7 @@
 						<exclude>LICENSE.txt</exclude>
 						<exclude>src/main/java/com/genericconf/bbbgateway/web/pages/res/js/jquery-1.4.2.min.js</exclude>
 						<exclude>src/main/java/com/genericconf/bbbgateway/web/pages/res/js/jquery-ui-1.8.custom.min.js</exclude>
-						<exclude>src/main/java/com/genericconf/bbbgateway/web/pages/res/js/jquery-ui-1.8.custom.css</exclude>
+						<exclude>src/main/java/com/genericconf/bbbgateway/web/pages/res/css/custom-theme/jquery-ui-1.8.custom.css</exclude>
 					</excludes>
 					<useDefaultExcludes>true</useDefaultExcludes>
 					<properties>
