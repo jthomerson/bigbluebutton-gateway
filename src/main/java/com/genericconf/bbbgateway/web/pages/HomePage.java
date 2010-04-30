@@ -1,4 +1,4 @@
-package com.wickettraining;
+package com.genericconf.bbbgateway.web.pages;
 
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
