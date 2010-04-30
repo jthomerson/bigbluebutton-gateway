@@ -24,6 +24,8 @@ public interface IBigBlueButtonApiService {
 
 	public void createMeeting(Meeting meeting) throws ApiException;
 
-	public String createJoinMeetingURL(Meeting meeting, Attendee att);
+	public boolean updateMeeting(Meeting meeting) throws ApiException;
 	
+	public String createJoinMeetingURL(Meeting meeting, Attendee att);
+
 }

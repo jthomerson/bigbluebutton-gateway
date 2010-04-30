@@ -36,18 +36,20 @@ public class Meeting extends Entity {
 	private String moderatorPassword;
 	private String welcome;
 	private String logoutURL;
-	
+
 	private Collection<Attendee> waiters;
 	private Collection<Attendee> attendees;
 
 	private int maximumAttendees;
+
 	private Date startTime;
+	private Date endTime;
 
 	public void addWaiter(Attendee att) {
 		att.setJoinedWaitingRoomTime(new Date());
 		ensureUniqueAttendeeName(att);
 		getWaiters().add(att);
-		
+
 		int waitersAllowed = 0;
 		for (Attendee waiter : getWaiters()) {
 			if (waiter.isAllowedToJoin()) {
@@ -60,9 +62,13 @@ public class Meeting extends Entity {
 	}
 
 	public void attendeeIsJoining(Attendee att) {
-		getWaiters().remove(att);
+		final boolean removed = getWaiters().remove(att);
 		att.setJoinedMeetingTime(new Date());
-		ensureUniqueAttendeeName(att);
+		if (removed) {
+			ensureUniqueAttendeeName(att);
+		} else {
+			// someone joined straight from the API and was not in our waiting room
+		}
 		getAttendees().add(att);
 	}
 
@@ -79,6 +85,14 @@ public class Meeting extends Entity {
 
 	public int getAttendeesWaiting() {
 		return getWaiters().size();
+	}
+
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
 	}
 
 	public Date getStartTime() {
@@ -146,11 +160,11 @@ public class Meeting extends Entity {
 		}
 		return waiters;
 	}
-	
+
 	public void setWaiters(Collection<Attendee> waiters) {
 		this.waiters = waiters;
 	}
-	
+
 	public Collection<Attendee> getAttendees() {
 		if (attendees == null) {
 			attendees = new LinkedHashSet<Attendee>();
@@ -186,6 +200,8 @@ public class Meeting extends Entity {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((attendeePassword == null) ? 0 : attendeePassword.hashCode());
+		result = prime * result + ((attendees == null) ? 0 : attendees.hashCode());
+		result = prime * result + ((endTime == null) ? 0 : endTime.hashCode());
 		result = prime * result + ((logoutURL == null) ? 0 : logoutURL.hashCode());
 		result = prime * result + maximumAttendees;
 		result = prime * result + ((meetingID == null) ? 0 : meetingID.hashCode());
@@ -193,6 +209,7 @@ public class Meeting extends Entity {
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((server == null) ? 0 : server.hashCode());
 		result = prime * result + ((startTime == null) ? 0 : startTime.hashCode());
+		result = prime * result + ((waiters == null) ? 0 : waiters.hashCode());
 		result = prime * result + ((welcome == null) ? 0 : welcome.hashCode());
 		return result;
 	}
@@ -210,6 +227,16 @@ public class Meeting extends Entity {
 			if (other.attendeePassword != null)
 				return false;
 		} else if (!attendeePassword.equals(other.attendeePassword))
+			return false;
+		if (attendees == null) {
+			if (other.attendees != null)
+				return false;
+		} else if (!attendees.equals(other.attendees))
+			return false;
+		if (endTime == null) {
+			if (other.endTime != null)
+				return false;
+		} else if (!endTime.equals(other.endTime))
 			return false;
 		if (logoutURL == null) {
 			if (other.logoutURL != null)
@@ -243,6 +270,11 @@ public class Meeting extends Entity {
 				return false;
 		} else if (!startTime.equals(other.startTime))
 			return false;
+		if (waiters == null) {
+			if (other.waiters != null)
+				return false;
+		} else if (!waiters.equals(other.waiters))
+			return false;
 		if (welcome == null) {
 			if (other.welcome != null)
 				return false;
@@ -253,16 +285,16 @@ public class Meeting extends Entity {
 
 	@Override
 	public String toString() {
-		return "Meeting [attendeePassword=" + attendeePassword + ", logoutURL=" + logoutURL + ", maximumAttendees=" + maximumAttendees
-				+ ", meetingID=" + meetingID + ", moderatorPassword=" + moderatorPassword + ", name=" + name + ", server=" + server + ", startTime="
-				+ startTime + ", welcome=" + welcome + "]";
+		return "Meeting [attendeePassword=" + attendeePassword + ", attendees=" + attendees + ", endTime=" + endTime + ", logoutURL=" + logoutURL
+				+ ", maximumAttendees=" + maximumAttendees + ", meetingID=" + meetingID + ", moderatorPassword=" + moderatorPassword + ", name="
+				+ name + ", server=" + server + ", startTime=" + startTime + ", waiters=" + waiters + ", welcome=" + welcome + "]";
 	}
 
 	public Attendee getAttendeeByUniqueID(String uniqueID) {
 		List<Attendee> atts = new ArrayList<Attendee>();
 		atts.addAll(getAttendees());
 		atts.addAll(getWaiters());
-		for(Attendee att : atts) {
+		for (Attendee att : atts) {
 			if (att.getUniqueID().equals(uniqueID)) {
 				return att;
 			}
@@ -274,7 +306,7 @@ public class Meeting extends Entity {
 		List<Attendee> atts = new ArrayList<Attendee>();
 		atts.addAll(getAttendees());
 		atts.addAll(getWaiters());
-		for(Attendee att : atts) {
+		for (Attendee att : atts) {
 			if (att.getName().equals(name)) {
 				return att;
 			}

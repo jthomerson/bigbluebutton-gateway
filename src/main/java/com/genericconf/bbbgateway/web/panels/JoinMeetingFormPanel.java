@@ -33,7 +33,11 @@ public class JoinMeetingFormPanel extends Panel {
 		fb.setOutputMarkupId(true).setOutputMarkupPlaceholderTag(true);
 		form.add(fb);
 		
-		form.add(new TextField<String>("name", new PropertyModel<String>(this, "attendeeName")).setRequired(true));
+		final TextField<String> name = new TextField<String>("name", new PropertyModel<String>(this, "attendeeName"));
+		form.add(name.setRequired(true).setOutputMarkupId(true));
+		if (AjaxRequestTarget.get() != null) {
+			AjaxRequestTarget.get().focusComponent(name);
+		}
 		form.add(new AjaxButton("submit") {
 			private static final long serialVersionUID = 1L;
 

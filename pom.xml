@@ -102,6 +102,11 @@
 			<artifactId>httpclient</artifactId>
 			<version>4.0.1</version>
 		</dependency>
+		<dependency>
+			<groupId>xstream</groupId>
+			<artifactId>xstream</artifactId>
+			<version>1.2.2</version>
+		</dependency>
 
 		<!--  JUNIT DEPENDENCY FOR TESTING -->
 		<dependency>

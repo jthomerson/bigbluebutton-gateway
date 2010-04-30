@@ -23,6 +23,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.genericconf.bbbgateway.domain.ApiException;
 import com.genericconf.bbbgateway.domain.Attendee;
@@ -30,19 +35,47 @@ import com.genericconf.bbbgateway.domain.Meeting;
 
 public class MeetingService implements IMeetingService {
 
+	private static final int INITIAL_TIMER_DELAY = 15 * 1000;
+	private static final int TIMER_INTERVAL = 15 * 1000;
+	private static final Logger logger = LoggerFactory.getLogger(MeetingService.class);
+	
 	private final Map<String, Meeting> meetings = new HashMap<String, Meeting>();
+	private final Timer timer;
 	private IBigBlueButtonApiService apiService;
+	
+	public MeetingService() {
+		TimerTask updateMeetings = new TimerTask() {
+    		@Override
+    		public void run() {
+    			logger.info("update meetings timer task running");
+    			for (Meeting meeting : meetings.values()) {
+    				tryToUpdateMeeting(meeting);
+    			}
+    		}
+    	};
 
+    	timer = new Timer(true);
+		timer.scheduleAtFixedRate(updateMeetings, INITIAL_TIMER_DELAY, TIMER_INTERVAL);
+	}
+	
 	// INTERFACE METHODS
 	@Override
 	public void bulkAllowAttendees(Meeting meeting) {
-		// TODO: force update of attendee list (from API) here
+		tryToUpdateMeeting(meeting);
 		
 		List<Attendee> waiters = new ArrayList<Attendee>(meeting.getWaiters());
 		final int allowIn = Math.max(0, (meeting.getMaximumAttendees() - meeting.getAttendeesInMeeting()));
 		waiters = waiters.subList(0, Math.min(waiters.size(), allowIn));
 		for (Attendee att : waiters) {
 			att.setAllowedToJoin(true);
+		}
+	}
+
+	private void tryToUpdateMeeting(Meeting meeting) {
+		try {
+			apiService.updateMeeting(meeting);
+		} catch (ApiException e) {
+			logger.error("error updating meeting: " + e.getMessage(), e);
 		}
 	}
 
