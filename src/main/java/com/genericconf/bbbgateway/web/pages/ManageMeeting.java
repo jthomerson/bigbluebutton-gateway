@@ -21,7 +21,9 @@ import java.util.UUID;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseAtInterceptPageException;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.AbstractReadOnlyModel;
+import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -56,9 +58,18 @@ public class ManageMeeting extends BasePage {
 				return meetingService.findByMeetingID(meetingID);
 			}
 		};
-		setDefaultModel(model);
+		setDefaultModel(new CompoundPropertyModel<Meeting>(model));
+
+		addComponents();
 	}
 	
+	private void addComponents() {
+		add(new Label("name"));
+		add(new Label("meetingID"));
+		add(new Label("attendeePassword"));
+		add(new Label("moderatorPassword"));
+	}
+
 	@Override
 	protected IModel<String> createContentHeaderLabelModel() {
 		return new AbstractReadOnlyModel<String>() {

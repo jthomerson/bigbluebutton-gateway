@@ -135,3 +135,19 @@ h3.ui-widget-header { padding: 2px; padding-left: 4px; }
 .dataTables td {
 	text-align: center;
 }
+.ui-widget-content .field em {
+	display: block;
+	float: left;
+	width: 150px;
+	text-align: right;
+	margin-right: 6px;
+}
+.two-columns .column-one, 
+.two-columns .column-two {
+	float: left;
+	width: 48%;
+}
+.two-columns .column-two {
+	float: right;
+	width: 48%;
+}

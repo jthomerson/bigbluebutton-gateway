@@ -16,8 +16,9 @@
 
 package com.genericconf.bbbgateway.domain;
 
+import java.util.Collection;
 import java.util.Date;
-import java.util.Random;
+import java.util.HashSet;
 
 import org.apache.commons.lang.RandomStringUtils;
 
@@ -33,16 +34,19 @@ public class Meeting extends Entity {
 	private String moderatorPassword;
 	private String welcome;
 	private String logoutURL;
+	
+	private Collection<Attendee> waiters;
+	private Collection<Attendee> attendees;
 
 	private int maximumAttendees;
 	private Date startTime;
 
 	public int getAttendeesInMeeting() {
-		return new Random().nextInt(100);
+		return getAttendees().size();
 	}
 
 	public int getAttendeesWaiting() {
-		return new Random().nextInt(100);
+		return getWaiters().size();
 	}
 
 	public Date getStartTime() {
@@ -102,6 +106,28 @@ public class Meeting extends Entity {
 
 	public void setLogoutURL(String logoutURL) {
 		this.logoutURL = logoutURL;
+	}
+
+	public Collection<Attendee> getWaiters() {
+		if (waiters == null) {
+			waiters = new HashSet<Attendee>();
+		}
+		return waiters;
+	}
+	
+	public void setWaiters(Collection<Attendee> waiters) {
+		this.waiters = waiters;
+	}
+	
+	public Collection<Attendee> getAttendees() {
+		if (attendees == null) {
+			attendees = new HashSet<Attendee>();
+		}
+		return attendees;
+	}
+
+	public void setAttendees(Collection<Attendee> attendees) {
+		this.attendees = attendees;
 	}
 
 	public Server getServer() {
