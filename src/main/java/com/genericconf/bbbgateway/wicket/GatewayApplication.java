@@ -18,10 +18,12 @@ package com.genericconf.bbbgateway.wicket;
 
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.target.coding.HybridUrlCodingStrategy;
+import org.apache.wicket.request.target.coding.IndexedHybridUrlCodingStrategy;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 
 import com.genericconf.bbbgateway.web.pages.CreateMeeting;
 import com.genericconf.bbbgateway.web.pages.HomePage;
+import com.genericconf.bbbgateway.web.pages.ManageMeeting;
 
 public class GatewayApplication extends WebApplication {
 	public GatewayApplication() {
@@ -37,5 +39,6 @@ public class GatewayApplication extends WebApplication {
 
 		mount(new HybridUrlCodingStrategy("home", HomePage.class));
 		mount(new HybridUrlCodingStrategy("create", CreateMeeting.class));
+		mount(new IndexedHybridUrlCodingStrategy("manage", ManageMeeting.class));
 	}
 }

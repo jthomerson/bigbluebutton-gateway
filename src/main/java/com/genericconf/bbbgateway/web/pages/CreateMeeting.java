@@ -39,7 +39,7 @@ public class CreateMeeting extends BasePage {
 			protected void onSubmit() {
 				super.onSubmit();
 				meetingService.createMeeting(getModelObject());
-				setResponsePage(HomePage.class);
+				setResponsePage(ManageMeeting.class, ManageMeeting.createParams(getModelObject()));
 			}
 		};
 		

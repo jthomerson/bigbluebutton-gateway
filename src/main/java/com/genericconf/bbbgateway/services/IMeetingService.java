@@ -25,5 +25,7 @@ public interface IMeetingService {
 	public void createMeeting(Meeting meeting);
 	
 	public Collection<Meeting> getMeetings();
+
+	public Meeting findByMeetingID(String meetingID);
 	
 }

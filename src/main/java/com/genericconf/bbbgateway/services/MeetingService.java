@@ -49,13 +49,18 @@ public class MeetingService implements IMeetingService {
 			meetings.put(meeting.getMeetingID(), meeting);
 		}
 	}
+	
+	@Override
+	public Meeting findByMeetingID(String meetingID) {
+		synchronized (meetings) {
+			return meetings.get(meetingID);
+		}
+	}
 
 	public Collection<Meeting> getMeetings() {
-		Collection<Meeting> vals = null;
 		synchronized (meetings) {
-			vals = meetings.values();
+			return Collections.unmodifiableCollection(meetings.values());
 		}
-		return Collections.unmodifiableCollection(vals);
 	}
 
 	// IoC Methods
