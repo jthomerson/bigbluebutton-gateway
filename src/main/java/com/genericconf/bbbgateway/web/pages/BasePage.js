@@ -15,11 +15,21 @@
  */
 
 $(document).ready(function(){
-});
-$(window).load(function(){
-	$('.feedbackPanel li.ui-state-error').prepend('<span class="ui-icon ui-icon-alert" style="float: left; margin-right: .2em;"></span>');
-	$('.feedbackPanel li.ui-state-highlight').prepend('<span class="ui-icon ui-icon-info" style="float: left; margin-right: .2em;"></span>');
-	
+	$(".dataTables").dataTable({
+		"bPaginate": false,
+		"bLengthChange": false,
+		"bFilter": false,
+		"bSort": true,
+		"bInfo": false,
+		"bAutoWidth": true,
+		"bJQueryUI": true,
+		"sPaginationType": "full_numbers"
+	});
+
+	$('form legend').button();
+	$('form input[type=submit]').button();
+
+	// equalize heights:
 	var rtHeight = $('#rightbar').height();
 	var ltHeight = $('#main-content').height();
 	
@@ -32,5 +42,8 @@ $(window).load(function(){
 		var orig = $('#rightbar .last-widget .ui-widget-content').height();
 		$('#rightbar .last-widget .ui-widget-content').height(orig + diff);
 	}
-	
+});
+$(window).load(function(){
+	$('.feedbackPanel li.ui-state-error').prepend('<span class="ui-icon ui-icon-alert" style="float: left; margin-right: .2em;"></span>');
+	$('.feedbackPanel li.ui-state-highlight').prepend('<span class="ui-icon ui-icon-info" style="float: left; margin-right: .2em;"></span>');
 });

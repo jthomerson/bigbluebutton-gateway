@@ -19,11 +19,13 @@ package com.genericconf.bbbgateway.web.pages;
 import org.apache.wicket.IPageMap;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.ResourceReference;
+import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.markup.html.CSSPackageResource;
 import org.apache.wicket.markup.html.JavascriptPackageResource;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
@@ -65,10 +67,24 @@ public class BasePage extends WebPage {
 		add(CSSPackageResource.getHeaderContribution(new ResourceReference(BasePage.class, "res/css/master.css", getSession().getLocale(), getSession().getStyle())));
 		add(JavascriptPackageResource.getHeaderContribution(new ResourceReference(BasePage.class, "res/js/jquery-1.4.2.min.js")));
 		add(JavascriptPackageResource.getHeaderContribution(new ResourceReference(BasePage.class, "res/js/jquery-ui-1.8.custom.min.js")));
+		add(JavascriptPackageResource.getHeaderContribution(new ResourceReference(BasePage.class, "res/js/jquery.dataTables.min.js")));
+//		add(JavascriptPackageResource.getHeaderContribution(new ResourceReference(BasePage.class, "res/js/jquerytablesorter/tablesorter_modified_for_tablesorter_filter.js")));
+//		add(JavascriptPackageResource.getHeaderContribution(new ResourceReference(BasePage.class, "res/js/jquerytablesorter/tablesorter_filter.js")));
 		add(JavascriptPackageResource.getHeaderContribution(new ResourceReference(BasePage.class, "BasePage.js", getSession().getLocale(), getSession().getStyle())));
 
 		add(new BookmarkablePageLink<Void>("homelink", getApplication().getHomePage()));
+		add(new BookmarkablePageLink<Void>("createmeeting", CreateMeeting.class));
+		
 		add(new Label("content-header", createContentHeaderLabelModel()));
+
+		add(new FeedbackPanel("feedback") {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected String getCSSClass(FeedbackMessage message) {
+				return message.getLevel() >= FeedbackMessage.ERROR ? "ui-state-error" : "ui-state-highlight";
+			}
+		});
 	}
 
 	protected IModel<String> createContentHeaderLabelModel() {

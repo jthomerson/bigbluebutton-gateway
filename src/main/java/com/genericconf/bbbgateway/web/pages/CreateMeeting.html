@@ -1,0 +1,67 @@
+<!--
+
+    Copyright 2010 Generic Conferencing, LLC
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+	<head> 
+		<wicket:head>
+			<style type="text/css"> 
+				form label {
+					float: left;
+					width: 200px;
+				}
+				form fieldset {
+					margin-bottom: 6px;
+				}
+			</style> 
+		</wicket:head>
+	</head> 
+	<body>
+		<wicket:extend>
+			<form wicket:id="form">
+				<fieldset>
+					<legend>Server Details</legend>
+					<div class="form-field">
+						<label for="server.domain">Domain</label>
+						<input type="text" wicket:id="server.domain" />
+					</div>
+					<div class="form-field">
+						<label for="server.context">Context</label>
+						<input type="text" wicket:id="server.context" />
+					</div>
+					<div class="form-field">
+						<label for="server.securitySalt">Security Salt</label>
+						<input type="text" wicket:id="server.securitySalt" />
+					</div>
+				</fieldset>
+				<fieldset>
+					<legend>Meeting Details</legend>
+					<div class="form-field">
+						<label for="name">Meeting Name</label>
+						<input type="text" wicket:id="name" />
+					</div>
+					<div class="form-field">
+						<label for="maximumAttendees">Initial Maximum Attendees</label>
+						<input type="text" wicket:id="maximumAttendees" />
+					</div>
+				</fieldset>
+				<input type="submit" value="Create meeting &gt;" />
+			</form>
+		</wicket:extend> 
+	</body> 
+</html> 

@@ -34,12 +34,14 @@
 			<snapshots><enabled>true</enabled></snapshots>
 			<releases><enabled>true</enabled></releases>
 		</repository>
+<!--
 		<repository>
 			<id>wicket-148</id>
 			<url>http://people.apache.org/~ivaynberg/wicket-1.4.8/m2-repo</url>
 			<snapshots><enabled>true</enabled></snapshots>
 			<releases><enabled>true</enabled></releases>
 		</repository>
+-->
 	</repositories>
 
 	<dependencies>
@@ -85,7 +87,17 @@
 		</dependency>
 	
 		<!-- OTHER DEPENDENCIES -->
-
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.5</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.4</version>
+		</dependency>
+		
 		<!--  JUNIT DEPENDENCY FOR TESTING -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -175,6 +187,7 @@
 						<exclude>LICENSE.txt</exclude>
 						<exclude>src/main/java/com/genericconf/bbbgateway/web/pages/res/js/jquery-1.4.2.min.js</exclude>
 						<exclude>src/main/java/com/genericconf/bbbgateway/web/pages/res/js/jquery-ui-1.8.custom.min.js</exclude>
+						<exclude>src/main/java/com/genericconf/bbbgateway/web/pages/res/js/jquery.dataTables.min.js</exclude>
 						<exclude>src/main/java/com/genericconf/bbbgateway/web/pages/res/css/custom-theme/jquery-ui-1.8.custom.css</exclude>
 					</excludes>
 					<useDefaultExcludes>true</useDefaultExcludes>

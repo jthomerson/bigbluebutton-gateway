@@ -22,9 +22,26 @@
 	</head> 
 	<body>
 		<wicket:extend>
-					This is where the homepage content will go.
-					<br />
-					<br />
+			<table class="dataTables">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Started</th>
+						<th>In meeting</th>
+						<th>Waiting</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr wicket:id="meetings">
+						<td wicket:id="name">Test Meeting One</td>
+						<td wicket:id="startTime">Jan 1, 2010 10:00 GMT</td>
+						<td wicket:id="attendeesInMeeting">10</td>
+						<td wicket:id="attendeesWaiting">15</td>
+						<td><a href="#" wicket:id="join">join</a></td>
+					</tr>
+				</tbody>
+			</table>
 		</wicket:extend> 
 	</body> 
 </html> 

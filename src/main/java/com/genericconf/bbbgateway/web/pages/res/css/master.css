@@ -128,3 +128,10 @@ h3.ui-widget-header { padding: 2px; padding-left: 4px; }
 .form-field {
 	text-align: left;
 }
+
+.dataTables {
+	width: 100%;
+}
+.dataTables td {
+	text-align: center;
+}
