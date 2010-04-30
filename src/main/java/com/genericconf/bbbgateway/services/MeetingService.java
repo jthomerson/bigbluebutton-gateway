@@ -34,7 +34,7 @@ public class MeetingService implements IMeetingService {
 	public void createMeeting(Meeting meeting) {
 		synchronized (meetings) {
 			if (meetings.containsKey(meeting.getMeetingID())) {
-				throw new RuntimeException("Meeting with that meeting ID already exists.  Please try again");
+//				throw new RuntimeException("Meeting with that meeting ID already exists.  Please try again");
 			}
 		}
 
