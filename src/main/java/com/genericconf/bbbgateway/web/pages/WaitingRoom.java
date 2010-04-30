@@ -70,7 +70,7 @@ public class WaitingRoom extends BasePage {
 		final WebMarkupContainer joinDialog = new WebMarkupContainer("joinDialog");
 		add(joinDialog.setOutputMarkupId(true));
 
-		add(new AbstractAjaxTimerBehavior(Duration.seconds(5)) {
+		add(new AbstractAjaxTimerBehavior(Duration.seconds(1)) {
 			private static final long serialVersionUID = 1L;
 
 			@Override

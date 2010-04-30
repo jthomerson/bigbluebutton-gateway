@@ -47,6 +47,16 @@ public class Meeting extends Entity {
 		att.setJoinedWaitingRoomTime(new Date());
 		ensureUniqueAttendeeName(att);
 		getWaiters().add(att);
+		
+		int waitersAllowed = 0;
+		for (Attendee waiter : getWaiters()) {
+			if (waiter.isAllowedToJoin()) {
+				waitersAllowed++;
+			}
+		}
+		if ((getAttendeesInMeeting() + waitersAllowed) < maximumAttendees) {
+			att.setAllowedToJoin(true);
+		}
 	}
 
 	public void attendeeIsJoining(Attendee att) {
@@ -270,6 +280,10 @@ public class Meeting extends Entity {
 			}
 		}
 		return null;
+	}
+
+	public void increaseMaximumAttendees(int howMany) {
+		maximumAttendees += howMany;
 	}
 
 }

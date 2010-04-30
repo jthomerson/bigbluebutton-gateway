@@ -16,10 +16,12 @@
 
 package com.genericconf.bbbgateway.services;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.genericconf.bbbgateway.domain.ApiException;
@@ -32,6 +34,18 @@ public class MeetingService implements IMeetingService {
 	private IBigBlueButtonApiService apiService;
 
 	// INTERFACE METHODS
+	@Override
+	public void bulkAllowAttendees(Meeting meeting) {
+		// TODO: force update of attendee list (from API) here
+		
+		List<Attendee> waiters = new ArrayList<Attendee>(meeting.getWaiters());
+		final int allowIn = Math.max(0, (meeting.getMaximumAttendees() - meeting.getAttendeesInMeeting()));
+		waiters = waiters.subList(0, Math.min(waiters.size(), allowIn));
+		for (Attendee att : waiters) {
+			att.setAllowedToJoin(true);
+		}
+	}
+
 	public void addToWaitingRoom(Meeting meeting, Attendee att) {
 		meeting.addWaiter(att);
 	}

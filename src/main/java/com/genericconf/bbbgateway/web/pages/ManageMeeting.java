@@ -23,11 +23,15 @@ import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseAtInterceptPageException;
 import org.apache.wicket.ajax.AbstractAjaxTimerBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.time.Duration;
 import org.slf4j.Logger;
@@ -48,6 +52,10 @@ public class ManageMeeting extends BasePage {
 	@SpringBean
 	private IMeetingService meetingService;
 	
+	private final DateTimeLabel checked;
+	private final AttendeeAndWaitingListPanel attendeeList;
+	private final Label maxAtts;
+	
 	public ManageMeeting(PageParameters params) {
 		final String meetingID = params.getString("0");
 		String check = params.getString("1");
@@ -67,29 +75,52 @@ public class ManageMeeting extends BasePage {
 		};
 		setDefaultModel(new CompoundPropertyModel<Meeting>(model));
 
-		addComponents();
-	}
-	
-	private void addComponents() {
 		add(new Label("name"));
 		add(new Label("meetingID"));
 		add(new Label("attendeePassword"));
 		add(new Label("moderatorPassword"));
-		final AttendeeAndWaitingListPanel attendeeList = new AttendeeAndWaitingListPanel("attendeeList", getModel());
+		add(maxAtts = new Label("maximumAttendees"));
+		maxAtts.setOutputMarkupId(true);
+		attendeeList = new AttendeeAndWaitingListPanel("attendeeList", getModel());
 		add(attendeeList.setAllowAdminControls(true));
 
-		final DateTimeLabel checked = new DateTimeLabel("checkedTime", new AlwaysReturnCurrentDateModel());
+		checked = new DateTimeLabel("checkedTime", new AlwaysReturnCurrentDateModel());
 		add(checked.setOutputMarkupId(true));
+		
+		final Form<Void> bulkAllowForm = new Form<Void>("bulkAllowForm");
+		add(bulkAllowForm.setOutputMarkupId(true));
+		final Model<Integer> howMany = new Model<Integer>(0);
+		bulkAllowForm.add(new TextField<Integer>("howMany", howMany, Integer.class));
+		bulkAllowForm.add(new AjaxButton("submit") {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				if (howMany.getObject() <= 0) {
+					target.appendJavascript("alert('must be a positive number');");
+				} else {
+					final Meeting meeting = ManageMeeting.this.getModel().getObject();
+					meeting.increaseMaximumAttendees(howMany.getObject());
+					meetingService.bulkAllowAttendees(meeting);
+					ManageMeeting.this.onPageAjaxRequest(target);
+				}
+			}
+		});
 		
 		add(new AbstractAjaxTimerBehavior(Duration.seconds(WAIT_SECONDS)) {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			protected void onTimer(AjaxRequestTarget target) {
-				target.addComponent(checked);
-				attendeeList.onAjaxRequest(target);
+				ManageMeeting.this.onPageAjaxRequest(target);
 			}
 		});
+	}
+	
+	protected final void onPageAjaxRequest(AjaxRequestTarget target) {
+		target.addComponent(checked);
+		target.addComponent(maxAtts);
+		attendeeList.onAjaxRequest(target);
 	}
 
 	@Override

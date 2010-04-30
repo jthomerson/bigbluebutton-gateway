@@ -28,12 +28,19 @@
 					<div class="field"><em>Meeting ID:</em><span wicket:id="meetingID"></span></div>
 					<div class="field"><em>Attendee Password:</em><span wicket:id="attendeePassword"></span></div>
 					<div class="field"><em>Moderator Password:</em><span wicket:id="moderatorPassword"></span></div>
+					<div class="field"><em>Max Attendees:</em><span wicket:id="maximumAttendees"></span></div>
 				</div>
 				<div class="column-two">
 					<p class="ui-state-highlight ui-corner-all">
 						<span class="ui-icon ui-icon-info" style="float: left; margin-right: .2em;"></span>
-						To join the meeting, open the homepage in a separate window and click "join".
+						To join the meeting for yourself, open the homepage in a separate window and click "join".
 					</p>
+					<p>
+						Add more attendees in bulk:
+						<form wicket:id="bulkAllowForm">
+							<input type="text" wicket:id="howMany" />
+							<input type="submit" wicket:id="submit" value="Allow" />
+						</form>
 					<b>Last checked: <span wicket:id="checkedTime"></span></b>
 				</div>
 			</div>

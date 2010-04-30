@@ -32,5 +32,7 @@ public interface IMeetingService {
 	public void addToWaitingRoom(Meeting meeting, Attendee att);
 
 	public String joinMeeting(Meeting object, Attendee object2);
+
+	public void bulkAllowAttendees(Meeting meeting);
 	
 }
