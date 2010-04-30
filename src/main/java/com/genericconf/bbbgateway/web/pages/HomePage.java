@@ -17,13 +17,13 @@
 package com.genericconf.bbbgateway.web.pages;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.behavior.SimpleAttributeModifier;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PropertyListView;
@@ -31,10 +31,11 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.convert.IConverter;
 
 import com.genericconf.bbbgateway.domain.Meeting;
 import com.genericconf.bbbgateway.services.IMeetingService;
+import com.genericconf.bbbgateway.web.components.DateTimeLabel;
+import com.genericconf.bbbgateway.web.panels.JoinMeetingFormPanel;
 
 public class HomePage extends BasePage {
 
@@ -53,33 +54,17 @@ public class HomePage extends BasePage {
 			}
 		};
 
+		final WebMarkupContainer joinContainer = new WebMarkupContainer("joinContainer");
+		joinContainer.setOutputMarkupPlaceholderTag(true).setVisible(false);
+		add(joinContainer);
+		
 		add(new PropertyListView<Meeting>("meetings", model) {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			protected void populateItem(ListItem<Meeting> item) {
+			protected void populateItem(final ListItem<Meeting> item) {
 				item.add(new Label("name"));
-				item.add(new Label("startTime") {
-					private static final long serialVersionUID = 1L;
-
-					@Override
-					public IConverter getConverter(Class<?> type) {
-						return new IConverter() {
-							private static final long serialVersionUID = 1L;
-
-							@SuppressWarnings("deprecation")
-							@Override
-							public String convertToString(Object value, Locale locale) {
-								return ((Date) value).toGMTString();
-							}
-							
-							@Override
-							public Object convertToObject(String value, Locale locale) {
-								throw new UnsupportedOperationException("should not need to convert to object");
-							}
-						};
-					}
-				});
+				item.add(new DateTimeLabel("startTime"));
 				item.add(new Label("attendeesInMeeting"));
 				item.add(new Label("attendeesWaiting"));
 				item.add(new AjaxLink<Void>("join") {
@@ -87,7 +72,15 @@ public class HomePage extends BasePage {
 
 					@Override
 					public void onClick(AjaxRequestTarget target) {
+						JoinMeetingFormPanel panel = new JoinMeetingFormPanel(joinContainer.getId(), item.getModel());
+						joinContainer.replaceWith(panel);
+						target.addComponent(panel);
 						
+						panel.add(new SimpleAttributeModifier("style", "display: none;"));
+						panel.onAjaxRequest(target);
+						
+						StringBuffer js = new StringBuffer().append("$('#").append(panel.getMarkupId()).append("').dialog({ modal: true, title: 'Join Meeting' });");
+						target.appendJavascript(js.toString());
 					}
 				});
 			}

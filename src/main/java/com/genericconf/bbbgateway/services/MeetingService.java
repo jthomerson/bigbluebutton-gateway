@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.genericconf.bbbgateway.domain.ApiException;
+import com.genericconf.bbbgateway.domain.Attendee;
 import com.genericconf.bbbgateway.domain.Meeting;
 
 public class MeetingService implements IMeetingService {
@@ -31,10 +32,19 @@ public class MeetingService implements IMeetingService {
 	private IBigBlueButtonApiService apiService;
 
 	// INTERFACE METHODS
+	public void addToWaitingRoom(Meeting meeting, Attendee att) {
+		meeting.addWaiter(att);
+	}
+	
+	public String joinMeeting(Meeting meeting, Attendee att) {
+		meeting.attendeeIsJoining(att);
+		return apiService.createJoinMeetingURL(meeting, att);
+	}
+	
 	public void createMeeting(Meeting meeting) {
 		synchronized (meetings) {
 			if (meetings.containsKey(meeting.getMeetingID())) {
-//				throw new RuntimeException("Meeting with that meeting ID already exists.  Please try again");
+				throw new RuntimeException("Meeting with that meeting ID already exists.  Please try again");
 			}
 		}
 

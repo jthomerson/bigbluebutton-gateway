@@ -19,26 +19,36 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
 <html xmlns="http://www.w3.org/1999/xhtml"> 
 	<head> 
+		<wicket:head>
+			<style type="text/css">
+				#topInfo {
+					text-align: justify;
+				} 
+			</style> 
+		</wicket:head>
 	</head> 
 	<body>
 		<wicket:extend>
 			<div class="two-columns ui-helper-clearfix" id="topInfo">
 				<div class="column-one">
-					<div class="field"><em>Name:</em><span wicket:id="name"></span></div>
+					<div class="field"><em>Meeting Name:</em><span wicket:id="name"></span></div>
 					<div class="field"><em>Meeting ID:</em><span wicket:id="meetingID"></span></div>
-					<div class="field"><em>Attendee Password:</em><span wicket:id="attendeePassword"></span></div>
-					<div class="field"><em>Moderator Password:</em><span wicket:id="moderatorPassword"></span></div>
+					<br />
+					<div class="field"><em>Your Name:</em><span wicket:id="attName"></span></div>
+					<div class="field"><em>Your Role:</em><span wicket:id="attRole"></span></div>
 				</div>
 				<div class="column-two">
 					<p class="ui-state-highlight ui-corner-all">
 						<span class="ui-icon ui-icon-info" style="float: left; margin-right: .2em;"></span>
-						To join the meeting, open the homepage in a separate window and click "join".
+						The moderators are throttling participants, and you are currently not allowed to join the meeting.  
+						Please wait on this page, and we will update you when you are allowed to join.
 					</p>
 					<b>Last checked: <span wicket:id="checkedTime"></span></b>
 				</div>
 			</div>
 			
 			<div wicket:id="attendeeList"></div>
+			<div wicket:id="joinDialog" style="display: none;"></div>
 		</wicket:extend> 
 	</body> 
 </html> 

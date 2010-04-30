@@ -1,0 +1,30 @@
+<wicket:panel>
+<div class="two-columns ui-helper-clearfix">
+	<div class="column-one ui-widget attendee-list">
+		<h3 class="ui-widget-header ui-corner-top">Current Attendees (<span wicket:id="attendeeCount"></span>)</h3>
+		<div class="ui-widget-content ui-corner-bottom">
+			<ul>
+				<li wicket:id="attendees">
+					<span wicket:id="name" /> (<span wicket:id="role" /> - <span wicket:id="userID" />)
+					<div wicket:id="admin" class="admin">
+						<a href="#" wicket:id="allowToJoin">allow to join</a>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div class="column-two ui-widget attendee-list">
+		<h3 class="ui-widget-header ui-corner-top">Waiting Attendees (<span wicket:id="waitingCount"></span>)</h3>
+		<div class="ui-widget-content ui-corner-bottom">
+			<ul class="attendee-list">
+				<li wicket:id="waiters">
+					<span wicket:id="name" /> (<span wicket:id="role" /><wicket:container wicket:id="userID"> - <span wicket:id="userID" /></wicket:container>)
+					<div wicket:id="admin" class="admin">
+						<a href="#" wicket:id="allowToJoin">allow to join</a>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+</wicket:panel>

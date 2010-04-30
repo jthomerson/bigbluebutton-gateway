@@ -16,17 +16,36 @@
 
 package com.genericconf.bbbgateway.domain;
 
-public class Attendee extends Entity {
+import java.util.Date;
+import java.util.UUID;
+
+import org.apache.commons.lang.builder.CompareToBuilder;
+import org.apache.commons.lang.builder.EqualsBuilder;
+
+public class Attendee extends Entity implements Comparable<Attendee> {
 	private static final long serialVersionUID = 1L;
 
+	private String uniqueID = UUID.randomUUID().toString();
 	private String userID;
 	private String name;
 	private Role role;
+
+	private Date joinedWaitingRoomTime;
+	private Date joinedMeetingTime;
+	private boolean allowedToJoin = false;
+
+	public String getPassword(Meeting meeting) {
+		return Role.MODERATOR.equals(role) ? meeting.getModeratorPassword() : meeting.getAttendeePassword();
+	}
 
 	public String getUserID() {
 		return userID;
 	}
 
+	public String getUniqueID() {
+		return uniqueID;
+	}
+	
 	public void setUserID(String userID) {
 		this.userID = userID;
 	}
@@ -47,10 +66,35 @@ public class Attendee extends Entity {
 		this.role = role;
 	}
 
+	public void setAllowedToJoin(boolean allowedToJoin) {
+		this.allowedToJoin = allowedToJoin;
+	}
+
+	public boolean isAllowedToJoin() {
+		return allowedToJoin;
+	}
+
+	public Date getJoinedWaitingRoomTime() {
+		return joinedWaitingRoomTime;
+	}
+
+	public void setJoinedWaitingRoomTime(Date joinedWaitingRoomTime) {
+		this.joinedWaitingRoomTime = joinedWaitingRoomTime;
+	}
+
+	public Date getJoinedMeetingTime() {
+		return joinedMeetingTime;
+	}
+
+	public void setJoinedMeetingTime(Date joinedMeetingTime) {
+		this.joinedMeetingTime = joinedMeetingTime;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + (allowedToJoin ? 1231 : 1237);
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((role == null) ? 0 : role.hashCode());
 		result = prime * result + ((userID == null) ? 0 : userID.hashCode());
@@ -59,34 +103,18 @@ public class Attendee extends Entity {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Attendee other = (Attendee) obj;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		if (role == null) {
-			if (other.role != null)
-				return false;
-		} else if (!role.equals(other.role))
-			return false;
-		if (userID == null) {
-			if (other.userID != null)
-				return false;
-		} else if (!userID.equals(other.userID))
-			return false;
-		return true;
+		return EqualsBuilder.reflectionEquals(this, obj);
 	}
 
 	@Override
 	public String toString() {
-		return "Attendee [name=" + name + ", role=" + role + ", userID=" + userID + "]";
+		return "Attendee [allowedToJoin=" + allowedToJoin + ", name=" + name + ", role=" + role + ", userID=" + userID + "]";
+	}
+
+	@Override
+	public int compareTo(Attendee o) {
+		return new CompareToBuilder().append(role, o.role).append(joinedWaitingRoomTime, o.joinedWaitingRoomTime).append(joinedMeetingTime,
+				o.joinedMeetingTime).append(name, o.name).toComparison();
 	}
 
 }

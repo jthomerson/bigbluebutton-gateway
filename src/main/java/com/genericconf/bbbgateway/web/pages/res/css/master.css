@@ -142,12 +142,25 @@ h3.ui-widget-header { padding: 2px; padding-left: 4px; }
 	text-align: right;
 	margin-right: 6px;
 }
+
+.two-columns {
+	margin-top: 6px;
+}
 .two-columns .column-one, 
 .two-columns .column-two {
 	float: left;
-	width: 48%;
+	width: 49%;
 }
 .two-columns .column-two {
 	float: right;
-	width: 48%;
+	width: 49%;
+}
+p.ui-state-highlight {
+	padding: 4px;
+	margin-top: 0px;
+	margin-bottom: 6px;
+}
+.attendee-list .admin {
+	font-size: 90%;
+	margin-bottom: 6px;
 }

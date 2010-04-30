@@ -16,9 +16,11 @@
 
 package com.genericconf.bbbgateway.domain;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
 
 import org.apache.commons.lang.RandomStringUtils;
 
@@ -40,6 +42,26 @@ public class Meeting extends Entity {
 
 	private int maximumAttendees;
 	private Date startTime;
+
+	public void addWaiter(Attendee att) {
+		att.setJoinedWaitingRoomTime(new Date());
+		ensureUniqueAttendeeName(att);
+		getWaiters().add(att);
+	}
+
+	public void attendeeIsJoining(Attendee att) {
+		getWaiters().remove(att);
+		att.setJoinedMeetingTime(new Date());
+		ensureUniqueAttendeeName(att);
+		getAttendees().add(att);
+	}
+
+	private synchronized void ensureUniqueAttendeeName(Attendee att) {
+		if (getAttendeeByName(att.getName()) != null) {
+			att.setName(att.getName() + " - " + RandomStringUtils.randomAlphanumeric(4));
+			ensureUniqueAttendeeName(att);
+		}
+	}
 
 	public int getAttendeesInMeeting() {
 		return getAttendees().size();
@@ -110,7 +132,7 @@ public class Meeting extends Entity {
 
 	public Collection<Attendee> getWaiters() {
 		if (waiters == null) {
-			waiters = new HashSet<Attendee>();
+			waiters = new ArrayList<Attendee>();
 		}
 		return waiters;
 	}
@@ -121,7 +143,7 @@ public class Meeting extends Entity {
 	
 	public Collection<Attendee> getAttendees() {
 		if (attendees == null) {
-			attendees = new HashSet<Attendee>();
+			attendees = new LinkedHashSet<Attendee>();
 		}
 		return attendees;
 	}
@@ -224,6 +246,30 @@ public class Meeting extends Entity {
 		return "Meeting [attendeePassword=" + attendeePassword + ", logoutURL=" + logoutURL + ", maximumAttendees=" + maximumAttendees
 				+ ", meetingID=" + meetingID + ", moderatorPassword=" + moderatorPassword + ", name=" + name + ", server=" + server + ", startTime="
 				+ startTime + ", welcome=" + welcome + "]";
+	}
+
+	public Attendee getAttendeeByUniqueID(String uniqueID) {
+		List<Attendee> atts = new ArrayList<Attendee>();
+		atts.addAll(getAttendees());
+		atts.addAll(getWaiters());
+		for(Attendee att : atts) {
+			if (att.getUniqueID().equals(uniqueID)) {
+				return att;
+			}
+		}
+		return null;
+	}
+
+	public Attendee getAttendeeByName(String name) {
+		List<Attendee> atts = new ArrayList<Attendee>();
+		atts.addAll(getAttendees());
+		atts.addAll(getWaiters());
+		for(Attendee att : atts) {
+			if (att.getName().equals(name)) {
+				return att;
+			}
+		}
+		return null;
 	}
 
 }

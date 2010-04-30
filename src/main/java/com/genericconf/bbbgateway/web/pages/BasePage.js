@@ -14,6 +14,13 @@
  * limitations under the License.
  */
 
+function initializeFormStuff(prependSelector) {
+	$(prependSelector + 'fieldset legend').button();
+	$(prependSelector + 'input[type=submit]').button();
+	$(prependSelector + '.feedbackPanel li.ui-state-error').prepend('<span class="ui-icon ui-icon-alert" style="float: left; margin-right: .2em;"></span>');
+	$(prependSelector + '.feedbackPanel li.ui-state-highlight').prepend('<span class="ui-icon ui-icon-info" style="float: left; margin-right: .2em;"></span>');
+}
+
 $(document).ready(function(){
 	$(".dataTables").dataTable({
 		"bPaginate": false,
@@ -26,8 +33,7 @@ $(document).ready(function(){
 		"sPaginationType": "full_numbers"
 	});
 
-	$('form legend').button();
-	$('form input[type=submit]').button();
+	initializeFormStuff('');
 
 	// equalize heights:
 	var rtHeight = $('#rightbar').height();
@@ -42,8 +48,4 @@ $(document).ready(function(){
 		var orig = $('#rightbar .last-widget .ui-widget-content').height();
 		$('#rightbar .last-widget .ui-widget-content').height(orig + diff);
 	}
-});
-$(window).load(function(){
-	$('.feedbackPanel li.ui-state-error').prepend('<span class="ui-icon ui-icon-alert" style="float: left; margin-right: .2em;"></span>');
-	$('.feedbackPanel li.ui-state-highlight').prepend('<span class="ui-icon ui-icon-info" style="float: left; margin-right: .2em;"></span>');
 });

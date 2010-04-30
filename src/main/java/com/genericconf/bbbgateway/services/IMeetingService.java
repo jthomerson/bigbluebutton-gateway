@@ -18,6 +18,7 @@ package com.genericconf.bbbgateway.services;
 
 import java.util.Collection;
 
+import com.genericconf.bbbgateway.domain.Attendee;
 import com.genericconf.bbbgateway.domain.Meeting;
 
 public interface IMeetingService {
@@ -27,5 +28,9 @@ public interface IMeetingService {
 	public Collection<Meeting> getMeetings();
 
 	public Meeting findByMeetingID(String meetingID);
+
+	public void addToWaitingRoom(Meeting meeting, Attendee att);
+
+	public String joinMeeting(Meeting object, Attendee object2);
 	
 }

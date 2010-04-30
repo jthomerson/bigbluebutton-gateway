@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 import com.genericconf.bbbgateway.domain.ApiException;
+import com.genericconf.bbbgateway.domain.Attendee;
 import com.genericconf.bbbgateway.domain.Meeting;
 import com.genericconf.bbbgateway.domain.Server;
 
@@ -42,6 +43,15 @@ public class BigBlueButtonApiService implements IBigBlueButtonApiService {
 	// manager to ensure immediate deallocation of all system resources
 	// httpclient.getConnectionManager().shutdown();
 
+	public String createJoinMeetingURL(Meeting meeting, Attendee att) {
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("fullName", att.getName());
+		params.put("meetingID", meeting.getMeetingID());
+		params.put("password", att.getPassword(meeting));
+
+		return createApiCallUrl("join", meeting.getServer(), params);
+	}
+	
 	@Override
 	public void createMeeting(final Meeting meeting) throws ApiException {
 		Map<String, String> params = new HashMap<String, String>();
@@ -96,11 +106,16 @@ public class BigBlueButtonApiService implements IBigBlueButtonApiService {
 	@SuppressWarnings("deprecation")
 	private String createQueryString(Map<String, String> params) {
 		StringBuffer sb = new StringBuffer();
+		boolean amp = false;
 		for (Entry<String, String> entry : params.entrySet()) {
 			if (entry.getValue() == null) {
 				continue;
 			}
+			if (amp) {
+				sb.append('&');
+			}
 			sb.append(entry.getKey()).append('=').append(URLEncoder.encode(entry.getValue()));
+			amp = true;
 		}
 		return sb.toString();
 	}

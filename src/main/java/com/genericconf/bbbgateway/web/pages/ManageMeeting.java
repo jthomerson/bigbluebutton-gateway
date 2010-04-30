@@ -21,22 +21,29 @@ import java.util.UUID;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseAtInterceptPageException;
+import org.apache.wicket.ajax.AbstractAjaxTimerBehavior;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.genericconf.bbbgateway.domain.Meeting;
 import com.genericconf.bbbgateway.services.IMeetingService;
+import com.genericconf.bbbgateway.web.components.DateTimeLabel;
+import com.genericconf.bbbgateway.web.panels.AttendeeAndWaitingListPanel;
 
 public class ManageMeeting extends BasePage {
 
 	private static final Logger logger = LoggerFactory.getLogger(ManageMeeting.class);
 	private static final String SALT = UUID.randomUUID().toString();
+	// TODO: update this before release:
+	private static final int WAIT_SECONDS = 6;
 	
 	@SpringBean
 	private IMeetingService meetingService;
@@ -68,6 +75,21 @@ public class ManageMeeting extends BasePage {
 		add(new Label("meetingID"));
 		add(new Label("attendeePassword"));
 		add(new Label("moderatorPassword"));
+		final AttendeeAndWaitingListPanel attendeeList = new AttendeeAndWaitingListPanel("attendeeList", getModel());
+		add(attendeeList.setAllowAdminControls(true));
+
+		final DateTimeLabel checked = new DateTimeLabel("checkedTime", new AlwaysReturnCurrentDateModel());
+		add(checked.setOutputMarkupId(true));
+		
+		add(new AbstractAjaxTimerBehavior(Duration.seconds(WAIT_SECONDS)) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected void onTimer(AjaxRequestTarget target) {
+				target.addComponent(checked);
+				attendeeList.onAjaxRequest(target);
+			}
+		});
 	}
 
 	@Override

@@ -19,15 +19,15 @@ package com.genericconf.bbbgateway.web.pages;
 import org.apache.wicket.IPageMap;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.ResourceReference;
-import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.markup.html.CSSPackageResource;
 import org.apache.wicket.markup.html.JavascriptPackageResource;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+
+import com.genericconf.bbbgateway.web.components.JQueryFeedbackPanel;
 
 public class BasePage extends WebPage {
 	private static final long serialVersionUID = 1L;
@@ -77,14 +77,7 @@ public class BasePage extends WebPage {
 		
 		add(new Label("content-header", createContentHeaderLabelModel()));
 
-		add(new FeedbackPanel("feedback") {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected String getCSSClass(FeedbackMessage message) {
-				return message.getLevel() >= FeedbackMessage.ERROR ? "ui-state-error" : "ui-state-highlight";
-			}
-		});
+		add(new JQueryFeedbackPanel("feedback"));
 	}
 
 	protected IModel<String> createContentHeaderLabelModel() {
