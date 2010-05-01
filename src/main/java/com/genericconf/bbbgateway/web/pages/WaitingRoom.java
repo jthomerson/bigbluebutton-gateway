@@ -1,3 +1,19 @@
+/**
+ * Copyright 2010 Generic Conferencing, LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.genericconf.bbbgateway.web.pages;
 
 import org.apache.commons.lang.StringUtils;
@@ -14,6 +30,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.time.Duration;
 
+import com.genericconf.bbbgateway.TimerSettings;
 import com.genericconf.bbbgateway.domain.Attendee;
 import com.genericconf.bbbgateway.domain.Meeting;
 import com.genericconf.bbbgateway.services.IMeetingService;
@@ -22,9 +39,6 @@ import com.genericconf.bbbgateway.web.panels.AttendeeAndWaitingListPanel;
 import com.genericconf.bbbgateway.web.panels.JoinMeetingLinkPanel;
 
 public class WaitingRoom extends BasePage {
-
-	// TODO: update this before release:
-	private static final int WAIT_SECONDS = 6;
 
 	@SpringBean
 	private IMeetingService meetingService;
@@ -70,13 +84,13 @@ public class WaitingRoom extends BasePage {
 		final WebMarkupContainer joinDialog = new WebMarkupContainer("joinDialog");
 		add(joinDialog.setOutputMarkupId(true));
 
-		add(new AbstractAjaxTimerBehavior(Duration.seconds(1)) {
+		add(new AbstractAjaxTimerBehavior(Duration.seconds(TimerSettings.INSTANCE.getSecondsBeforeFirstWaitingRoomPagePoll())) {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			protected void onTimer(AjaxRequestTarget target) {
 				target.addComponent(checked);
-				setUpdateInterval(Duration.seconds(WAIT_SECONDS));
+				setUpdateInterval(Duration.seconds(TimerSettings.INSTANCE.getSecondsBetweenWaitingRoomPagePolls()));
 				attendeeList.onAjaxRequest(target);
 				final Attendee att = attendee.getObject();
 				if (att.isAllowedToJoin()) {

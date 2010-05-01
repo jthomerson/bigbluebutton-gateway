@@ -29,14 +29,13 @@ import java.util.TimerTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.genericconf.bbbgateway.TimerSettings;
 import com.genericconf.bbbgateway.domain.ApiException;
 import com.genericconf.bbbgateway.domain.Attendee;
 import com.genericconf.bbbgateway.domain.Meeting;
 
 public class MeetingService implements IMeetingService {
 
-	private static final int INITIAL_TIMER_DELAY = 15 * 1000;
-	private static final int TIMER_INTERVAL = 15 * 1000;
 	private static final Logger logger = LoggerFactory.getLogger(MeetingService.class);
 	
 	private final Map<String, Meeting> meetings = new HashMap<String, Meeting>();
@@ -55,7 +54,9 @@ public class MeetingService implements IMeetingService {
     	};
 
     	timer = new Timer(true);
-		timer.scheduleAtFixedRate(updateMeetings, INITIAL_TIMER_DELAY, TIMER_INTERVAL);
+    	long timerDelay = TimerSettings.INSTANCE.getSecondsBeforeFirstMeetingUpdateRun() * 1000;
+    	long timerInterval = TimerSettings.INSTANCE.getSecondsBetweenMeetingUpdateRuns() * 1000;
+		timer.scheduleAtFixedRate(updateMeetings, timerDelay, timerInterval);
 	}
 	
 	// INTERFACE METHODS

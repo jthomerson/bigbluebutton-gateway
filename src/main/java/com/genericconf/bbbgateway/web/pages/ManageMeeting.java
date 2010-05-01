@@ -37,6 +37,7 @@ import org.apache.wicket.util.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.genericconf.bbbgateway.TimerSettings;
 import com.genericconf.bbbgateway.domain.Meeting;
 import com.genericconf.bbbgateway.services.IMeetingService;
 import com.genericconf.bbbgateway.web.components.DateTimeLabel;
@@ -46,8 +47,6 @@ public class ManageMeeting extends BasePage {
 
 	private static final Logger logger = LoggerFactory.getLogger(ManageMeeting.class);
 	private static final String SALT = UUID.randomUUID().toString();
-	// TODO: update this before release:
-	private static final int WAIT_SECONDS = 6;
 	
 	@SpringBean
 	private IMeetingService meetingService;
@@ -107,7 +106,7 @@ public class ManageMeeting extends BasePage {
 			}
 		});
 		
-		add(new AbstractAjaxTimerBehavior(Duration.seconds(WAIT_SECONDS)) {
+		add(new AbstractAjaxTimerBehavior(Duration.seconds(TimerSettings.INSTANCE.getSecondsBetweenManageMeetingPagePolls())) {
 			private static final long serialVersionUID = 1L;
 
 			@Override

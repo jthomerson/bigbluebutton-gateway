@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 
-package com.genericconf.bbbgateway.web.pages;
+package com.genericconf.bbbgateway;
 
-import java.util.Date;
 
-import org.apache.wicket.model.AbstractReadOnlyModel;
+public class TimerSettings {
 
-public class AlwaysReturnCurrentDateModel extends AbstractReadOnlyModel<Date> {
-	private static final long serialVersionUID = 1L;
-
-	@Override
-	public Date getObject() {
-		return new Date();
+	public static final TimerSettings INSTANCE = new TimerSettings();
+	
+	private TimerSettings() {
+		// no-op
 	}
+	
+	public int getSecondsBetweenMeetingUpdateRuns() { return 15; }
+	public int getSecondsBeforeFirstMeetingUpdateRun() { return 15; }
+	public int getSecondsBetweenManageMeetingPagePolls() { return 15; }
+	public int getSecondsBetweenWaitingRoomPagePolls() { return 15; }
+	public int getSecondsBeforeFirstWaitingRoomPagePoll() { return 2; }
 
 }
