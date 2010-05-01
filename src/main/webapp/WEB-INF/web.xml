@@ -41,6 +41,10 @@
 			<param-name>applicationClassName</param-name>
 			<param-value>com.genericconf.bbbgateway.wicket.GatewayApplication</param-value>
  		</init-param>
+	    <init-param>
+			<param-name>wicket.configuration</param-name>
+			<param-value>deployment</param-value>
+	    </init-param>
  	</filter>
 
 	<context-param>
