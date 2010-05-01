@@ -49,8 +49,20 @@ public class MeetingService implements IMeetingService {
     		@Override
     		public void run() {
     			logger.info("update meetings timer task running");
-    			for (Meeting meeting : meetings.values()) {
+    			Set<Meeting> toRemove = new HashSet<Meeting>();
+    			for (Meeting meeting : new HashSet<Meeting>(meetings.values())) {
     				tryToUpdateMeeting(meeting);
+    				// now allow new ones to join if some have dropped off:
+    				bulkAllowAttendees(meeting);
+    				if (meeting.isTimedOut()) {
+    					toRemove.add(meeting);
+    				}
+    			}
+    			logger.info("meetings to remove: " + toRemove);
+    			synchronized(meetings) {
+        			for (Meeting rem : toRemove) {
+        				meetings.remove(rem.getMeetingID());
+        			}
     			}
     		}
     	};
@@ -72,6 +84,7 @@ public class MeetingService implements IMeetingService {
 		Collections.sort(waiters);
 		waiters = waiters.subList(0, Math.min(waiters.size(), allowIn));
 		for (Attendee att : waiters) {
+			logger.debug("allowing {} to join", new Object[] { att });
 			att.setAllowedToJoin(true);
 		}
 	}

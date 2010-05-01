@@ -62,14 +62,19 @@ public class ManageMeeting extends BasePage {
 		logger.info("meeting ID: " + meetingID + "; check: " + check + "; okay: " + okay);
 		if (!okay) {
 			getSession().error("You are not authorized to manage that meeting");
-			throw new RestartResponseAtInterceptPageException(HomePage.class);
+			throw new RestartResponseAtInterceptPageException(getApplication().getHomePage());
 		}
 		IModel<Meeting> model = new LoadableDetachableModel<Meeting>() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			protected Meeting load() {
-				return meetingService.findByMeetingID(meetingID);
+				final Meeting mtg = meetingService.findByMeetingID(meetingID);
+				if (mtg == null) {
+					getSession().error("That meeting no longer exists");
+					throw new RestartResponseAtInterceptPageException(getApplication().getHomePage());
+				}
+				return mtg;
 			}
 		};
 		setDefaultModel(new CompoundPropertyModel<Meeting>(model));

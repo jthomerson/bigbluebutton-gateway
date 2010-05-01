@@ -35,14 +35,15 @@ public class TimerSettings {
 	// NOTE: these will only be called before app is started, resulting in non-dev values always
 	public int getSecondsBetweenMeetingUpdateRuns() { return isDev() ? 15 : 45; }
 	public int getSecondsBeforeFirstMeetingUpdateRun() { return isDev() ? 15 : 45; }
+	public int getSecondsBeforeMeetingIsRemovedAfterEnding() { return 15 * 60; } /* 15 minutes */
 	
 	// ManageMeeting page:
-	public int getSecondsBetweenManageMeetingPagePolls() { return isDev() ? 15 : 30; }
+	public int getSecondsBetweenManageMeetingPagePolls() { return isDev() ? 5 : 20; }
 	
 	// WaitingRoom page:
-	public int getSecondsBetweenWaitingRoomPagePolls() { return isDev() ? 10 : 90; }
+	public int getSecondsBetweenWaitingRoomPagePolls() { return isDev() ? 5 : 20; }
 	public int getSecondsBeforeFirstWaitingRoomPagePoll() { return isDev() ? 2 : 2; }
-	public int getSecondsWithNoPingThatIndicatesTimeOut() { return isDev() ? 30 : 210; }
+	public int getSecondsWithNoPingThatIndicatesTimeOut() { return isDev() ? 15 : 90; }
 
 	// HomePage :
 	public int getSecondsBetweenHomePagePolls() { return getSecondsBetweenWaitingRoomPagePolls(); }

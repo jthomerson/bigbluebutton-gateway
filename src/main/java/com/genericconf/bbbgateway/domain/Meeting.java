@@ -23,10 +23,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.RandomStringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.genericconf.bbbgateway.TimerSettings;
 
 public class Meeting extends Entity {
 
 	private static final long serialVersionUID = 1L;
+	private static final Logger logger = LoggerFactory.getLogger(Meeting.class);
 
 	private Server server;
 
@@ -288,6 +293,18 @@ public class Meeting extends Entity {
 	public void removeAttendee(Attendee att) {
 		attendees.remove(att.getName());
 		waiters.remove(att.getName());
+	}
+
+	public boolean isTimedOut() {
+		if (startTime != null && endTime != null) {
+			long ended = endTime.getTime();
+			final int elapsed = (int) ((System.currentTimeMillis() - ended) / 1000);
+			final boolean timedOut = elapsed > TimerSettings.INSTANCE.getSecondsBeforeMeetingIsRemovedAfterEnding();
+			logger.debug("meeting: {}, ended: {}, elapsed: {}, threshold: {}, timed out: {}", new Object[] { name, ended, elapsed, TimerSettings.INSTANCE.getSecondsBeforeMeetingIsRemovedAfterEnding(), timedOut });
+			return timedOut;
+		}
+		logger.debug("meeting not timed out because it hasn't started and ended");
+		return false;
 	}
 
 }

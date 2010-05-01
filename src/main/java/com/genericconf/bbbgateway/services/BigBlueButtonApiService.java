@@ -69,6 +69,7 @@ public class BigBlueButtonApiService implements IBigBlueButtonApiService {
 					Date end = (Date) xml.get("endTime");
 					boolean running = (Boolean) xml.get("running");
 					meeting.setStartTime(start);
+					meeting.setEndTime(end);
 					logger.info("meeting [{}] start: {}; end: {}; running: {}", new Object[] { meeting.getMeetingID(), start, end, running });
 
 					List<Attendee> atts = (List<Attendee>) xml.get("attendees");
