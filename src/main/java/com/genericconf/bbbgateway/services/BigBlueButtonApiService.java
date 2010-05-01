@@ -20,6 +20,7 @@ import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -82,11 +83,16 @@ public class BigBlueButtonApiService implements IBigBlueButtonApiService {
 						}
 					}
 					logger.info("names of attendees still in meeting: " + namesStillOn);
-					for (Attendee ourAtt : meeting.getAttendees()) {
+					Set<Attendee> toRemove = new HashSet<Attendee>(); 
+					for (Iterator<Attendee> it = meeting.getAttendees().iterator(); it.hasNext(); ) {
+						Attendee ourAtt = it.next();
 						if (namesStillOn.contains(ourAtt.getName()) == false) {
 							logger.debug("removing: " + ourAtt);
-							meeting.getAttendees().remove(ourAtt);
+							toRemove.add(ourAtt);
 						}
+					}
+					for(Attendee rem : toRemove) {
+						meeting.removeAttendee(rem);
 					}
 				}
 				return success;

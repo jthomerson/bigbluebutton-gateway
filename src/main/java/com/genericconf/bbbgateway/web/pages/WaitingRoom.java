@@ -34,8 +34,8 @@ public class WaitingRoom extends BasePage {
 
 	public WaitingRoom(PageParameters params) {
 		final String meetingID = params.getString("0");
-		final String attUniqID = params.getString("1");
-		if (StringUtils.isEmpty(meetingID) || StringUtils.isEmpty(attUniqID)) {
+		final String attName = params.getString("1");
+		if (StringUtils.isEmpty(meetingID) || StringUtils.isEmpty(attName)) {
 			throw new RestartResponseAtInterceptPageException(getApplication().getHomePage());
 		}
 		meeting = new LoadableDetachableModel<Meeting>() {
@@ -51,7 +51,7 @@ public class WaitingRoom extends BasePage {
 
 			@Override
 			protected Attendee load() {
-				return meeting.getObject().getAttendeeByUniqueID(attUniqID);
+				return meeting.getObject().getAttendeeByName(attName);
 			}
 		};
 
@@ -109,7 +109,7 @@ public class WaitingRoom extends BasePage {
 	public static PageParameters createPageParameters(Meeting meeting, Attendee att) {
 		PageParameters pp = new PageParameters();
 		pp.add("0", meeting.getMeetingID());
-		pp.add("1", att.getUniqueID());
+		pp.add("1", att.getName());
 		return pp;
 	}
 }

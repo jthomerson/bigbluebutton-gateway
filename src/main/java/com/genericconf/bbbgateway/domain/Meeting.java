@@ -16,12 +16,11 @@
 
 package com.genericconf.bbbgateway.domain;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.LinkedHashSet;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang.RandomStringUtils;
 
@@ -38,8 +37,8 @@ public class Meeting extends Entity {
 	private String welcome;
 	private String logoutURL;
 
-	private Collection<Attendee> waiters;
-	private Collection<Attendee> attendees;
+	private Map<String, Attendee> waiters = Collections.synchronizedMap(new HashMap<String, Attendee>());
+	private Map<String, Attendee> attendees = Collections.synchronizedMap(new HashMap<String, Attendee>());
 
 	private int maximumAttendees;
 
@@ -49,7 +48,7 @@ public class Meeting extends Entity {
 	public void addWaiter(Attendee att) {
 		att.setJoinedWaitingRoomTime(new Date());
 		ensureUniqueAttendeeName(att);
-		getWaiters().add(att);
+		waiters.put(att.getName(), att);
 
 		int waitersAllowed = 0;
 		for (Attendee waiter : getWaiters()) {
@@ -63,14 +62,14 @@ public class Meeting extends Entity {
 	}
 
 	public void attendeeIsJoining(Attendee att) {
-		final boolean removed = getWaiters().remove(att);
+		final Attendee removed = waiters.remove(att.getName());
 		att.setJoinedMeetingTime(new Date());
-		if (removed) {
+		if (removed != null) {
 			ensureUniqueAttendeeName(att);
 		} else {
 			// someone joined straight from the API and was not in our waiting room
 		}
-		getAttendees().add(att);
+		attendees.put(att.getName(), att);
 	}
 
 	private synchronized void ensureUniqueAttendeeName(Attendee att) {
@@ -156,25 +155,11 @@ public class Meeting extends Entity {
 	}
 
 	public Collection<Attendee> getWaiters() {
-		if (waiters == null) {
-			waiters = Collections.synchronizedList(new ArrayList<Attendee>());
-		}
-		return waiters;
-	}
-
-	public void setWaiters(Collection<Attendee> waiters) {
-		this.waiters = waiters;
+		return Collections.unmodifiableCollection(waiters.values());
 	}
 
 	public Collection<Attendee> getAttendees() {
-		if (attendees == null) {
-			attendees = Collections.synchronizedSet(new LinkedHashSet<Attendee>());
-		}
-		return attendees;
-	}
-
-	public void setAttendees(Collection<Attendee> attendees) {
-		this.attendees = attendees;
+		return Collections.unmodifiableCollection(attendees.values());
 	}
 
 	public Server getServer() {
@@ -291,32 +276,18 @@ public class Meeting extends Entity {
 				+ name + ", server=" + server + ", startTime=" + startTime + ", waiters=" + waiters + ", welcome=" + welcome + "]";
 	}
 
-	public Attendee getAttendeeByUniqueID(String uniqueID) {
-		List<Attendee> atts = new ArrayList<Attendee>();
-		atts.addAll(getAttendees());
-		atts.addAll(getWaiters());
-		for (Attendee att : atts) {
-			if (att.getUniqueID().equals(uniqueID)) {
-				return att;
-			}
-		}
-		return null;
-	}
-
 	public Attendee getAttendeeByName(String name) {
-		List<Attendee> atts = new ArrayList<Attendee>();
-		atts.addAll(getAttendees());
-		atts.addAll(getWaiters());
-		for (Attendee att : atts) {
-			if (att.getName().equals(name)) {
-				return att;
-			}
-		}
-		return null;
+		Attendee att = attendees.get(name);
+		return att == null ? waiters.get(name) : att;
 	}
 
 	public void increaseMaximumAttendees(int howMany) {
 		maximumAttendees += howMany;
+	}
+
+	public void removeAttendee(Attendee att) {
+		attendees.remove(att.getName());
+		waiters.remove(att.getName());
 	}
 
 }
