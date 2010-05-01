@@ -19,20 +19,42 @@ package com.genericconf.bbbgateway.domain;
 import java.util.Date;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.genericconf.bbbgateway.TimerSettings;
 
 public class Attendee extends Entity implements Comparable<Attendee> {
-	private static final long serialVersionUID = 1L;
 
+	private static final long serialVersionUID = 1L;
+	private static final Logger logger = LoggerFactory.getLogger(Attendee.class);
+	
 	private String userID;
 	private String name;
 	private Role role;
 
+	private long lastPingTime = 0l;
 	private Date joinedWaitingRoomTime;
 	private Date joinedMeetingTime;
 	private boolean allowedToJoin = false;
 
 	public String getPassword(Meeting meeting) {
 		return Role.MODERATOR.equals(role) ? meeting.getModeratorPassword() : meeting.getAttendeePassword();
+	}
+	
+	public boolean isTimedOut() {
+		if (lastPingTime == 0l) {
+			return false;
+		}
+		final int elapsed = (int) ((System.currentTimeMillis() - lastPingTime) / 1000);
+		final boolean timedOut = elapsed > TimerSettings.INSTANCE.getSecondsWithNoPingThatIndicatesTimeOut();
+		logger.debug("attendee: {}, last ping: {}, elapsed: {}, threshold: {}, timed out: {}", new Object[] { name, lastPingTime, elapsed, TimerSettings.INSTANCE.getSecondsWithNoPingThatIndicatesTimeOut(), timedOut });
+		return timedOut;
+	}
+	
+	public void pinged() {
+		logger.debug("attendee: {}, PING!", new Object[] { name });
+		lastPingTime = System.currentTimeMillis();
 	}
 
 	public String getUserID() {
@@ -72,6 +94,7 @@ public class Attendee extends Entity implements Comparable<Attendee> {
 	}
 
 	public void setJoinedWaitingRoomTime(Date joinedWaitingRoomTime) {
+		pinged();
 		this.joinedWaitingRoomTime = joinedWaitingRoomTime;
 	}
 
@@ -80,6 +103,7 @@ public class Attendee extends Entity implements Comparable<Attendee> {
 	}
 
 	public void setJoinedMeetingTime(Date joinedMeetingTime) {
+		pinged();
 		this.joinedMeetingTime = joinedMeetingTime;
 	}
 

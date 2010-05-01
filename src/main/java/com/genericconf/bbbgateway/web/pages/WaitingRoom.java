@@ -93,6 +93,7 @@ public class WaitingRoom extends BasePage {
 				setUpdateInterval(Duration.seconds(TimerSettings.INSTANCE.getSecondsBetweenWaitingRoomPagePolls()));
 				attendeeList.onAjaxRequest(target);
 				final Attendee att = attendee.getObject();
+				att.pinged();
 				if (att.isAllowedToJoin()) {
 					stop();
 

@@ -20,7 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.PageParameters;
+import org.apache.wicket.ajax.AbstractAjaxTimerBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -31,7 +33,9 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.time.Duration;
 
+import com.genericconf.bbbgateway.TimerSettings;
 import com.genericconf.bbbgateway.domain.Meeting;
 import com.genericconf.bbbgateway.services.IMeetingService;
 import com.genericconf.bbbgateway.web.components.DateTimeLabel;
@@ -58,6 +62,17 @@ public class HomePage extends BasePage {
 		joinContainer.setOutputMarkupPlaceholderTag(true).setVisible(false);
 		add(joinContainer);
 		
+    	final WebMarkupContainer placeholder = new WebMarkupContainer("tablePlaceholder");
+    	placeholder.add(new AbstractAjaxTimerBehavior(Duration.seconds(TimerSettings.INSTANCE.getSecondsBetweenHomePagePolls())) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected void onTimer(AjaxRequestTarget target) {
+				target.addComponent(placeholder);
+				target.appendJavascript("initializeTableStuff();");
+			}
+    		
+    	});
 		final PropertyListView<Meeting> meetingList = new PropertyListView<Meeting>("meetings", model) {
 			private static final long serialVersionUID = 1L;
 
@@ -87,7 +102,8 @@ public class HomePage extends BasePage {
     		
     	};
     	meetingList.setOutputMarkupId(true);
-		add(meetingList);
+    	add(placeholder.setOutputMarkupId(true));
+		placeholder.add(meetingList);
     }
     
     @Override

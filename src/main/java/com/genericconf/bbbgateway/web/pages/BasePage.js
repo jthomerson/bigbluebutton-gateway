@@ -21,7 +21,7 @@ function initializeFormStuff(prependSelector) {
 	$(prependSelector + '.feedbackPanel li.ui-state-highlight').prepend('<span class="ui-icon ui-icon-info" style="float: left; margin-right: .2em;"></span>');
 }
 
-$(document).ready(function(){
+function initializeTableStuff() {
 	$(".dataTables").dataTable({
 		"bPaginate": false,
 		"bLengthChange": false,
@@ -32,7 +32,10 @@ $(document).ready(function(){
 		"bJQueryUI": true,
 		"sPaginationType": "full_numbers"
 	});
+}
 
+$(document).ready(function(){
+	initializeTableStuff();
 	initializeFormStuff('');
 
 	// equalize heights:

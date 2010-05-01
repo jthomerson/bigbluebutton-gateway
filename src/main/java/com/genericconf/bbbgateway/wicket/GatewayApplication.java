@@ -21,12 +21,14 @@ import org.apache.wicket.request.target.coding.IndexedHybridUrlCodingStrategy;
 import org.apache.wicket.request.target.coding.IndexedParamUrlCodingStrategy;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 
+import com.genericconf.bbbgateway.TimerSettings;
 import com.genericconf.bbbgateway.web.pages.CreateMeeting;
 import com.genericconf.bbbgateway.web.pages.HomePage;
 import com.genericconf.bbbgateway.web.pages.ManageMeeting;
 import com.genericconf.bbbgateway.web.pages.WaitingRoom;
 
 public class GatewayApplication extends WebApplication {
+	
 	public GatewayApplication() {
 	}
 
@@ -42,5 +44,7 @@ public class GatewayApplication extends WebApplication {
 		mount(new IndexedHybridUrlCodingStrategy("create", CreateMeeting.class));
 		mount(new IndexedParamUrlCodingStrategy("waiting-room", WaitingRoom.class));
 		mount(new IndexedParamUrlCodingStrategy("manage", ManageMeeting.class));
+		
+		TimerSettings.INSTANCE.setDevelopment(DEVELOPMENT.equals(getConfigurationType()));
 	}
 }

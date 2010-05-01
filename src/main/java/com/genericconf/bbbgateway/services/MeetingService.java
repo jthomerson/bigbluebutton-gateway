@@ -21,8 +21,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -56,6 +58,7 @@ public class MeetingService implements IMeetingService {
     	timer = new Timer(true);
     	long timerDelay = TimerSettings.INSTANCE.getSecondsBeforeFirstMeetingUpdateRun() * 1000;
     	long timerInterval = TimerSettings.INSTANCE.getSecondsBetweenMeetingUpdateRuns() * 1000;
+    	logger.info("starting timer to update meetings every {} millis, after an initial delay of {} millis", new Object[] { timerInterval, timerDelay });
 		timer.scheduleAtFixedRate(updateMeetings, timerDelay, timerInterval);
 	}
 	
@@ -75,6 +78,20 @@ public class MeetingService implements IMeetingService {
 
 	private void tryToUpdateMeeting(Meeting meeting) {
 		try {
+			// update our waiting room attendees first:
+			Set<Attendee> toRemove = new HashSet<Attendee>();
+			for (Attendee att : meeting.getWaiters()) {
+				if (att.isTimedOut()) {
+					toRemove.add(att);
+				}
+			}
+			logger.debug("waiting room attendees to remove: " + toRemove);
+			for (Attendee rem : toRemove) {
+				logger.debug("removing waiting room attendee: " + rem);
+				meeting.removeAttendee(rem);
+			}
+			
+			// now update actual attendees from api:
 			apiService.updateMeeting(meeting);
 		} catch (ApiException e) {
 			logger.error("error updating meeting: " + e.getMessage(), e);

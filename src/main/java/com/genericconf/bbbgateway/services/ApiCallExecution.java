@@ -25,6 +25,8 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.genericconf.bbbgateway.domain.ApiException;
 import com.genericconf.bbbgateway.domain.Attendee;
@@ -37,6 +39,8 @@ import com.thoughtworks.xstream.mapper.MapperWrapper;
 
 public abstract class ApiCallExecution {
 
+	private static final Logger logger = LoggerFactory.getLogger(ApiCallExecution.class);
+	
 	public static final XStream XSTREAM;
 	
 	static {
@@ -98,11 +102,11 @@ public abstract class ApiCallExecution {
 
 	final CharSequence makeHttpRequest(HttpClient httpClient, String url) throws Exception {
         HttpGet httpget = new HttpGet(url); 
-        System.out.println("executing request " + httpget.getURI());
+        logger.info("executing request " + httpget.getURI());
         // Create a response handler
         ResponseHandler<String> responseHandler = new BasicResponseHandler();
         String responseBody = httpClient.execute(httpget, responseHandler);
-        System.out.println("Response: " + responseBody);
+        logger.debug("Response: " + responseBody);
         return responseBody;
 	}
 	

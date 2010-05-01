@@ -16,23 +16,23 @@
 
 package com.genericconf.bbbgateway;
 
-import org.apache.wicket.Application;
 
 
 public class TimerSettings {
 
 	public static final TimerSettings INSTANCE = new TimerSettings();
 	
+	private boolean dev = false;
 	private TimerSettings() {
 		// no-op
 	}
 
 	private boolean isDev() {
-		return Application.exists() && Application.DEVELOPMENT.equals(Application.get().getConfigurationType());
+		return dev;
 	}
 	
-	// MeetingService: 
-	// (NOTE: these will currently always be non-dev since they are initialized when the app doesn't yet exist)
+	// MeetingService:
+	// NOTE: these will only be called before app is started, resulting in non-dev values always
 	public int getSecondsBetweenMeetingUpdateRuns() { return isDev() ? 15 : 45; }
 	public int getSecondsBeforeFirstMeetingUpdateRun() { return isDev() ? 15 : 45; }
 	
@@ -40,7 +40,15 @@ public class TimerSettings {
 	public int getSecondsBetweenManageMeetingPagePolls() { return isDev() ? 15 : 30; }
 	
 	// WaitingRoom page:
-	public int getSecondsBetweenWaitingRoomPagePolls() { return isDev() ? 15 : 90; }
+	public int getSecondsBetweenWaitingRoomPagePolls() { return isDev() ? 10 : 90; }
 	public int getSecondsBeforeFirstWaitingRoomPagePoll() { return isDev() ? 2 : 2; }
+	public int getSecondsWithNoPingThatIndicatesTimeOut() { return isDev() ? 30 : 210; }
+
+	// HomePage :
+	public int getSecondsBetweenHomePagePolls() { return getSecondsBetweenWaitingRoomPagePolls(); }
+
+	public void setDevelopment(boolean devMode) {
+		this.dev = devMode;
+	}
 
 }
