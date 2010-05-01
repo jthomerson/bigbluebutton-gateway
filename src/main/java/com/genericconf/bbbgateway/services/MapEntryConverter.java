@@ -2,24 +2,24 @@ package com.genericconf.bbbgateway.services;
 
 import java.util.AbstractMap;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.converters.SingleValueConverterWrapper;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import com.thoughtworks.xstream.mapper.Mapper;
 
 public final class MapEntryConverter implements Converter {
 
-	private final Mapper mapper;
+	private final XStream xstream;
 	
-	public MapEntryConverter(Mapper mapper) {
-		this.mapper = mapper;
+	public MapEntryConverter(XStream xs) {
+		this.xstream = xs;
 	}
 
 	@Override
@@ -36,8 +36,11 @@ public final class MapEntryConverter implements Converter {
             final String valstr = reader.getValue();
             Object val = valstr;
             // TODO: fix this:
-            if ("attendees".equals(nodeName)) {
-            	val = context.convertAnother(map, List.class);
+            
+            final Class<?> clazz = xstream.getMapper().realClass(nodeName);
+            final Converter converter = xstream.getConverterLookup().lookupConverterForType(clazz);
+            if (clazz != null && (converter instanceof SingleValueConverterWrapper) == false) {
+            	val = context.convertAnother(map, clazz, converter);
             } else if (StringUtils.isEmpty(valstr) || "null".equals(valstr)) {
             	val = null;
             } else if ("true".equals(valstr.toLowerCase())) {

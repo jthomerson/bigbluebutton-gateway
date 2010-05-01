@@ -34,14 +34,12 @@
 			<snapshots><enabled>true</enabled></snapshots>
 			<releases><enabled>true</enabled></releases>
 		</repository>
-<!--
 		<repository>
 			<id>wicket-148</id>
 			<url>http://people.apache.org/~ivaynberg/wicket-1.4.8/m2-repo</url>
 			<snapshots><enabled>true</enabled></snapshots>
 			<releases><enabled>true</enabled></releases>
 		</repository>
--->
 	</repositories>
 
 	<dependencies>

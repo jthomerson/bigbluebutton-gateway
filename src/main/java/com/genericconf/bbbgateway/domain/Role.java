@@ -20,4 +20,5 @@ public enum Role {
 
 	MODERATOR,
 	VIEWER
+	
 }

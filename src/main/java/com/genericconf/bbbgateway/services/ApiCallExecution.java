@@ -16,6 +16,7 @@
 
 package com.genericconf.bbbgateway.services;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -30,8 +31,47 @@ import com.genericconf.bbbgateway.domain.Attendee;
 import com.genericconf.bbbgateway.domain.Role;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.collections.CollectionConverter;
+import com.thoughtworks.xstream.io.xml.DomDriver;
+import com.thoughtworks.xstream.mapper.ClassAliasingMapper;
+import com.thoughtworks.xstream.mapper.MapperWrapper;
 
 public abstract class ApiCallExecution {
+
+	public static final XStream XSTREAM;
+	
+	static {
+		final XStream xs = new XStream(new DomDriver()) {
+			@Override
+			protected MapperWrapper wrapMapper(final MapperWrapper next) {
+				return new MapperWrapper(next) {
+					@SuppressWarnings("unchecked")
+					@Override
+					public Class realClass(String elementName) {
+						final ClassAliasingMapper cam = (ClassAliasingMapper) next.lookupMapperOfType(ClassAliasingMapper.class);
+						final boolean found = cam.aliasIsAttribute(elementName);
+						return found ? super.realClass(elementName) : String.class;
+					}
+					
+				};
+			}
+		};
+		xs.registerConverter(new MapEntryConverter(xs));
+		xs.registerConverter(new CollectionConverter(xs.getMapper()));
+		xs.registerConverter(new IntegerConverter());
+		xs.registerConverter(new DateConverter(new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy")));
+		xs.alias("response", Map.class);
+		xs.alias("attendees", List.class);
+		xs.addImplicitCollection(Map.class, "attendees");
+		xs.alias("attendee", Attendee.class);
+		xs.aliasField("fullName", Attendee.class, "name");
+		xs.alias("role", Role.class);
+		xs.alias("running", Boolean.class);
+		xs.alias("participantCount", Integer.class);
+		xs.alias("moderatorCount", Integer.class);
+		xs.alias("startTime", Date.class);
+		xs.alias("endTime", Date.class);
+		XSTREAM = xs;
+	}
 	
 	final boolean execute() throws ApiException {
 		try {
@@ -45,21 +85,7 @@ public abstract class ApiCallExecution {
 	@SuppressWarnings("unchecked")
 	final Map<String, Object> getXmlFromApi(HttpClient httpClient, String url) throws Exception {
 		CharSequence rawxml = makeHttpRequest(httpClient, url);
-		XStream xs = new XStream();
-		xs.registerConverter(new MapEntryConverter(xs.getMapper()));
-		xs.registerConverter(new CollectionConverter(xs.getMapper()));
-		xs.alias("response", Map.class);
-		xs.alias("attendees", List.class);
-		xs.addImplicitCollection(Map.class, "attendees");
-		xs.alias("attendee", Attendee.class);
-		xs.alias("returncode", String.class);
-		xs.aliasField("fullName", Attendee.class, "name");
-		xs.alias("fullName", String.class);
-		xs.alias("userID", String.class);
-		xs.alias("role", Role.class);
-		xs.alias("startTime", Date.class);
-		xs.alias("endTime", Date.class);
-		return (Map<String, Object>) xs.fromXML(rawxml.toString());
+		return (Map<String, Object>) XSTREAM.fromXML(rawxml.toString());
 	}
 	
 	final boolean wasSuccess(Map<String, Object> response) {
