@@ -6,7 +6,7 @@
 	<groupId>com.genericconf</groupId>
 	<artifactId>bbbgateway</artifactId>
 	<packaging>war</packaging>
-	<version>0.7</version>
+	<version>0.8-SNAPSHOT</version>
 	<name>BBB Gateway</name>
 	<description>
 		An API integration for BigBlueButton (http://bigbluebutton.org) that allows the 
