@@ -17,12 +17,12 @@
 package com.genericconf.bbbgateway.services;
 
 import java.net.URLEncoder;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -60,27 +60,32 @@ public class BigBlueButtonApiService implements IBigBlueButtonApiService {
 			@Override
 			@SuppressWarnings({ "unchecked" })
 			boolean doExecute() throws Exception {
-				DateFormat dates = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
-				
 				Map<String, Object> xml = getXmlFromApi(httpClient, url);
 				logger.info("getMeetingInfo response: " + xml);
 				boolean success = wasSuccess(xml);
 				if (success) {
-					final String startStr = (String) xml.get("startTime");
-					Date start = isDateNull(startStr) ? null : dates.parse(startStr);
-					final String endStr = (String) xml.get("endTime");
-					Date end = isDateNull(endStr) ? null : dates.parse(endStr);
+					Date start = (Date) xml.get("startTime");
+					Date end = (Date) xml.get("endTime");
 					boolean running = (Boolean) xml.get("running");
 					meeting.setStartTime(start);
-					logger.info("meeting [" + meeting.getMeetingID() + "] start: " + start + "; end: " + end + "; running: " + running);
+					logger.info("meeting [{}] start: {}; end: {}; running: {}", new Object[] { meeting.getMeetingID(), start, end, running });
 
 					List<Attendee> atts = (List<Attendee>) xml.get("attendees");
-					for (Attendee att : atts) {
-						Attendee ourAtt = meeting.getAttendeeByName(att.getName());
+					Set<String> namesStillOn = new HashSet<String>();
+					for (Attendee apiAtt : atts) {
+						namesStillOn.add(apiAtt.getName());
+						Attendee ourAtt = meeting.getAttendeeByName(apiAtt.getName());
 						if (ourAtt == null) {
-							meeting.attendeeIsJoining(att);
+							meeting.attendeeIsJoining(apiAtt);
 						} else {
-							ourAtt.setUserID(att.getUserID());
+							ourAtt.setUserID(apiAtt.getUserID());
+						}
+					}
+					logger.info("names of attendees still in meeting: " + namesStillOn);
+					for (Attendee ourAtt : meeting.getAttendees()) {
+						if (namesStillOn.contains(ourAtt.getName()) == false) {
+							logger.debug("removing: " + ourAtt);
+							meeting.getAttendees().remove(ourAtt);
 						}
 					}
 				}
@@ -124,6 +129,10 @@ public class BigBlueButtonApiService implements IBigBlueButtonApiService {
 					String modPW = (String) xml.get("moderatorPW");
 					meeting.setAttendeePassword(attPW);
 					meeting.setModeratorPassword(modPW);
+				} else {
+					if ("idNotUnique".equals(xml.get("messageKey"))) {
+						// do something different - update the passwords from the getMeetings call or something
+					}
 				}
 				return success;
 			}

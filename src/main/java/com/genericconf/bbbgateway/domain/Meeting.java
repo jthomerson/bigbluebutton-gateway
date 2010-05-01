@@ -18,6 +18,7 @@ package com.genericconf.bbbgateway.domain;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -31,7 +32,7 @@ public class Meeting extends Entity {
 	private Server server;
 
 	private String name;
-	private String meetingID;
+	private String meetingID = RandomStringUtils.randomAlphanumeric(6);
 	private String attendeePassword;
 	private String moderatorPassword;
 	private String welcome;
@@ -156,7 +157,7 @@ public class Meeting extends Entity {
 
 	public Collection<Attendee> getWaiters() {
 		if (waiters == null) {
-			waiters = new ArrayList<Attendee>();
+			waiters = Collections.synchronizedList(new ArrayList<Attendee>());
 		}
 		return waiters;
 	}
@@ -167,7 +168,7 @@ public class Meeting extends Entity {
 
 	public Collection<Attendee> getAttendees() {
 		if (attendees == null) {
-			attendees = new LinkedHashSet<Attendee>();
+			attendees = Collections.synchronizedSet(new LinkedHashSet<Attendee>());
 		}
 		return attendees;
 	}

@@ -58,7 +58,7 @@ public class HomePage extends BasePage {
 		joinContainer.setOutputMarkupPlaceholderTag(true).setVisible(false);
 		add(joinContainer);
 		
-		add(new PropertyListView<Meeting>("meetings", model) {
+		final PropertyListView<Meeting> meetingList = new PropertyListView<Meeting>("meetings", model) {
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -85,7 +85,9 @@ public class HomePage extends BasePage {
 				});
 			}
     		
-    	});
+    	};
+    	meetingList.setOutputMarkupId(true);
+		add(meetingList);
     }
     
     @Override

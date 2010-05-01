@@ -47,7 +47,6 @@ public class CreateMeeting extends BasePage {
 		form.add(new TextField<String>("server.context").setRequired(true));
 		form.add(new TextField<String>("server.securitySalt").setRequired(true));
 		form.add(new TextField<String>("name").setRequired(true));
-		form.add(new TextField<Integer>("maximumAttendees").setRequired(true));
 		
 		add(form);
 	}

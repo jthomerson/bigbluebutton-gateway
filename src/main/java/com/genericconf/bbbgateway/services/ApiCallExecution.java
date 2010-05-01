@@ -77,6 +77,10 @@ public abstract class ApiCallExecution {
 		try {
 			return doExecute();
 		} catch (Exception e) {
+			if (e instanceof ApiException) {
+				throw (ApiException) e;
+			}
+			// wrap:
 			throw new ApiException("error calling BigBlueButton API: " + e.getMessage(), e);
 		}
 

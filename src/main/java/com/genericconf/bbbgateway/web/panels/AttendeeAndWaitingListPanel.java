@@ -21,6 +21,7 @@ import org.apache.wicket.model.PropertyModel;
 
 import com.genericconf.bbbgateway.domain.Attendee;
 import com.genericconf.bbbgateway.domain.Meeting;
+import com.genericconf.bbbgateway.domain.Role;
 
 public class AttendeeAndWaitingListPanel extends Panel {
 	private static final long serialVersionUID = 1L;
@@ -106,7 +107,7 @@ public class AttendeeAndWaitingListPanel extends Panel {
 					@Override
 					protected void onComponentTagBody(MarkupStream markupStream, ComponentTag openTag) {
 						final Attendee att = item.getModelObject();
-						String text = att.isAllowedToJoin() ? "already allowed in" : "allow to join now";
+						String text = att.isAllowedToJoin() ? "already allowed in" : "allow to join";
 						replaceComponentTagBody(markupStream, openTag, text);
 					}
 					@Override
@@ -115,8 +116,27 @@ public class AttendeeAndWaitingListPanel extends Panel {
 					}
 					
 				});
+				admin.add(new AjaxLink<Void>("swapRole") {
+					private static final long serialVersionUID = 1L;
+
+					@Override
+					public void onClick(AjaxRequestTarget target) {
+						Role newRole = Role.VIEWER.equals(item.getModelObject().getRole()) ? Role.MODERATOR : Role.VIEWER;
+						item.getModelObject().setRole(newRole);
+						target.addComponent(AttendeeAndWaitingListPanel.this);
+					}
+					
+					@Override
+					protected void onComponentTagBody(MarkupStream markupStream, ComponentTag openTag) {
+						final Attendee att = item.getModelObject();
+						String text = Role.VIEWER.equals(att.getRole()) ? "make moderator" : "make viewer";
+						replaceComponentTagBody(markupStream, openTag, text);
+					}
+					
+				});
 			}
 		};
+		lv.setOutputMarkupId(true);
 		return lv;
 	}
 

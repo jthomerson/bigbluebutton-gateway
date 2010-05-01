@@ -65,6 +65,7 @@ public class MeetingService implements IMeetingService {
 		
 		List<Attendee> waiters = new ArrayList<Attendee>(meeting.getWaiters());
 		final int allowIn = Math.max(0, (meeting.getMaximumAttendees() - meeting.getAttendeesInMeeting()));
+		Collections.sort(waiters);
 		waiters = waiters.subList(0, Math.min(waiters.size(), allowIn));
 		for (Attendee att : waiters) {
 			att.setAllowedToJoin(true);
