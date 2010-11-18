@@ -93,7 +93,11 @@ public abstract class ApiCallExecution {
 	@SuppressWarnings("unchecked")
 	final Map<String, Object> getXmlFromApi(HttpClient httpClient, String url) throws Exception {
 		CharSequence rawxml = makeHttpRequest(httpClient, url);
-		return (Map<String, Object>) XSTREAM.fromXML(rawxml.toString());
+		Map<String, Object> xml = (Map<String, Object>) XSTREAM.fromXML(rawxml.toString());
+		if (!wasSuccess(xml)) {
+			logger.error("Call was unsuccessful.  Here is the XML:\n" + xml);
+		}
+		return xml;
 	}
 	
 	final boolean wasSuccess(Map<String, Object> response) {

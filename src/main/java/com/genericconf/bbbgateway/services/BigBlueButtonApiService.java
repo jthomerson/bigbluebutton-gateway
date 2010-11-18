@@ -41,7 +41,6 @@ import com.genericconf.bbbgateway.domain.Server;
 public class BigBlueButtonApiService implements IBigBlueButtonApiService {
 
 	private static final Logger logger = LoggerFactory.getLogger(BigBlueButtonApiService.class);
-	
 
 	private final HttpClient httpClient = new DefaultHttpClient();
 
@@ -166,7 +165,7 @@ public class BigBlueButtonApiService implements IBigBlueButtonApiService {
 		}
 		sb.append("http://").append(server.getDomain()).append(context).append(callName).append("?");
 		String queryString = createQueryString(params);
-		sb.append(queryString).append("&checksum=").append(createChecksum(server, queryString));
+		sb.append(queryString).append("&checksum=").append(createChecksum(server, callName, queryString));
 		return sb.toString();
 	}
 
@@ -187,8 +186,11 @@ public class BigBlueButtonApiService implements IBigBlueButtonApiService {
 		return sb.toString();
 	}
 
-	private String createChecksum(Server server, String queryString) {
-		return DigestUtils.shaHex(queryString + server.getSecuritySalt());
+	private String createChecksum(Server server, String callName, String queryString) {
+		// TODO: we need to check to see what version of the API the server is running first
+		// 0.64 way of creating checksum: 
+		// String cs = DigestUtils.shaHex(queryString + server.getSecuritySalt());
+		return DigestUtils.shaHex(callName + queryString + server.getSecuritySalt());
 	}
 
 }
